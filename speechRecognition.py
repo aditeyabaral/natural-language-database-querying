@@ -11,7 +11,7 @@ def audio_to_text(epoch = 1):
     with m as source: audio = r.listen(source)
     while epoch>0:
         try:
-            value = r.recognize_google(audio, show_all = False) #fr-FR, hi-IN,kn-IN,ta-IN
+            value = r.recognize_google(audio, show_all = False) #fr-FR, hi-IN, kn-IN, ta-IN
             translated = translate(value)
         except sr.UnknownValueError:
             print("Didn't catch that!")
