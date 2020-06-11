@@ -1,0 +1,21 @@
+video -> frames -> objects in frames
+		-> most occuring objects in video
+
+filtered frames -> frames containing most occuring object
+
+search for frame(filtered/non filtered) on Google ->
+	-> if YT links returned:
+		open YT, obtain tags from taglist of YT, title from YT, 
+		description -> get keywords
+
+	-> search with text:
+		-> obtain text in frames, keywords in transcript, entities
+		-> search for these on google images 
+			-> return keywords in top N image titles
+			-> extract relevant searches (tags on top)
+
+https://github.com/tanaikech/goris
+https://serpapi.com/google-reverse-image
+https://gist.github.com/bluele/6320204
+https://simply-python.com/2014/11/10/google-image-search-with-python-part-1/
+https://www.youtube.com/watch?v=Myj8zbsfZBA
