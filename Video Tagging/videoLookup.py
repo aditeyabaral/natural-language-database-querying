@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import keywords
 import speechRecognition
 
-from video_utils import videoFrames
+from videoUtils import videoFrames
 
 def getLinks(filename):
     search_url = 'http://www.google.co.in/searchbyimage/upload'
