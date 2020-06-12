@@ -25,19 +25,22 @@ def getKeywordsWatson(text):
     authenticator = IAMAuthenticator('XEy0UMdLmvbRgDt9nMUmJ2REoi96wOQqbX_SYcGUs9pw')
     service = NaturalLanguageUnderstandingV1(version='2019-07-12',authenticator=authenticator)
     service.set_service_url('https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/b0a8b557-9834-4462-bd64-b3ceccd8b7e4')
-    response = service.analyze(text = text, features=Features(keywords=KeywordsOptions(),entities = EntitiesOptions(), categories = CategoriesOptions())).get_result()
-    fin = json.loads(json.dumps(response, indent = 2))
-    keys = [fin["keywords"][i]["text"] for i in range(len(fin["keywords"])) if fin["keywords"][i]["relevance"]>=0.6]
-    entities = [fin["entities"][i]["text"] for i in range(len(fin["entities"])) if fin["entities"][i]["relevance"]>=0.9]
-    l = [fin["categories"][i]["label"].split('/') for i in range(len(fin["categories"]))]
-    categories = list()
-    for i in l:
-        categories.extend([j for j in i if j!=''])
-    keys = list(set(keys))
-    categories = list(set(categories))
-    entities = list(set(entities))
-    final = {"keywords":keys, "categories":categories, "entities":entities}
-    return final
+    try:
+        response = service.analyze(text = text, features=Features(keywords=KeywordsOptions(),entities = EntitiesOptions(), categories = CategoriesOptions())).get_result()
+        fin = json.loads(json.dumps(response, indent = 2))
+        keys = [fin["keywords"][i]["text"] for i in range(len(fin["keywords"])) if fin["keywords"][i]["relevance"]>=0.6]
+        entities = [fin["entities"][i]["text"] for i in range(len(fin["entities"])) if fin["entities"][i]["relevance"]>=0.9]
+        l = [fin["categories"][i]["label"].split('/') for i in range(len(fin["categories"]))]
+        categories = list()
+        for i in l:
+            categories.extend([j for j in i if j!=''])
+        keys = list(set(keys))
+        categories = list(set(categories))
+        entities = list(set(entities))
+        final = {"keywords":keys, "categories":categories, "entities":entities}
+        return final
+    except:
+        return -1
 
 def getKeywordsRAKE(text):
     r.extract_keywords_from_text(text)
@@ -113,6 +116,7 @@ def remove_same_name_duplicates(a):
     t = [i.lower() for i in a]
     return list(set(t))
 
+
 def getKeywordsAll(text, n = 2, op = "all"):
     kw_watson = getKeywordsWatson(text)
     kw_rake = getKeywordsRAKE(text)
@@ -129,5 +133,3 @@ def getKeywordsAll(text, n = 2, op = "all"):
         for method in op:
             final_kw[method] = kw_dict[method]
         return final_kw
-
- 
