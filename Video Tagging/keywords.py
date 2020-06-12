@@ -113,6 +113,7 @@ def remove_same_name_duplicates(a):
     t = [i.lower() for i in a]
     return list(set(t))
 
+
 def getKeywordsAll(text, n = 2, op = "all"):
     kw_watson = getKeywordsWatson(text)
     kw_rake = getKeywordsRAKE(text)
