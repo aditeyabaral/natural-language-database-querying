@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 import keywords
 import speechRecognition
 
+from video_utils import videoFrames
+
 def getLinks(filename):
     search_url = 'http://www.google.co.in/searchbyimage/upload'
     multipart = {'encoded_image': (filename, open(filename, 'rb')), 'image_content': ''}
@@ -15,10 +17,10 @@ def getLinks(filename):
     soup = BeautifulSoup(page.content, "html.parser")
     links = soup.find_all("a", href = True)
     return links
-       
+
 
 def getYouTubeLinks(a):
-    filtered = [i for i in a if i is not None and i!="#" and "google.com" not in i and 
+    filtered = [i for i in a if i is not None and i!="#" and "google.com" not in i and
          "google.co.in" not in i and "wikipedia" not in i]
     media_links = [i for i in filtered if i.startswith("/search?") or i.startswith("https://")]
     youtube_links = [i for i in media_links if i.startswith("https://www.youtube")]
@@ -90,7 +92,7 @@ def getImageTags(frame_keywords):
     return image_tags
 
 
-def getTagsfromFrame(imgfilename, videofilename):
+def getTagsFromFrame(imgfilename, videofilename):
     link_obj = getLinks(imgfilename)
     all_links = [str(i.get("href")) for i in link_obj]
     youtube_links = getYouTubeLinks(all_links)
@@ -105,19 +107,22 @@ def getTagsfromFrame(imgfilename, videofilename):
         #frame_keywords+= frame_objects
         image_tags = getImageTags(frame_keywords)
         return image_tags
-        
-        
+
+
 def getTags(videofilename):
     #extract frames and store them in some directory
     #load frames as images and store them in list
     #for every image in list call getTagsfromFrame(image, video) and store in list
-    #filter this list by EITHER- 
-        #A. combining the list of lists into one list, take list(set(list)), 
+    #filter this list by EITHER-
+        #A. combining the list of lists into one list, take list(set(list)),
             #then use w2v to find most similar words(top K)
-        #B. find the common elements(or atleast 85%-90% presence) and return them. 
+        #B. find the common elements(or atleast 85%-90% presence) and return them.
             #If len(common elements)<4, goto A.
-    pass
+    frames = videoFrames(videofilename)
+    for frame in frames:
+        getTagsFromFrame(frame, videofilename)
+
 
 imgfilename = r"../Database/Images/sampleimg.png"
 videofilename = r"../Database/Video/sample3.mp4"
-t = getTagsfromFrame(imgfilename, videofilename)
+t = getTagsFromFrame(imgfilename, videofilename)
