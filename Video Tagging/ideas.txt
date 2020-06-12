@@ -1,5 +1,6 @@
 video -> frames -> objects in frames
 		-> most occuring objects in video
+	-> frame rate?
 
 filtered frames -> frames containing most occuring object
 
@@ -9,21 +10,7 @@ Cleaning up of keywords has to be done.
 	-> Remove same name duplicates
 	-> Keep only most similar keywords (step might be needed multiple times)
 
-*Add try-except for non supported languages in Watson and translate
-*Change Watson to return rake if error. 
+os.path.basename
 
-
+ 
 Visit the URL and extract full title for google image search?
-
-OPTIONS OF KEYWORDS TO USE (* : currently deployed)
-
--> Watson keywords + entities*
--> Watson keywords
--> Google Relevant Searches*
--> Titles of Google Image Search results*
--> Common image search tags
--> All image search tags
--> Youtube Title*
--> Youtube Description*
--> Common YouTube tags
--> All YouTube tags

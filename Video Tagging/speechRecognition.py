@@ -21,7 +21,7 @@ def audio_to_text(epoch = 1):
 def video_to_text(filename):
     video = VideoFileClip(filename)
     audio_obj = video.audio
-    short_filename = filename[max(0,filename.rfind("/"))+1:filename.rfind(".")]
+    short_filename = filename[max(0,filename.rfind("\\"))+1:filename.rfind(".")]
     audio_obj.write_audiofile(r"../Database/Audio/{}.wav".format(short_filename))
     r = sr.Recognizer()
     audiofile = sr.AudioFile(r"../Database/Audio/{}.wav".format(short_filename))
@@ -59,4 +59,4 @@ def translate(query):
 
 
 #value, translated = audio_to_text()
-#transcript, translated = video_to_text(r"../Database/Video/sample11.mp4")
+#transcript, translated = video_to_text(r"../Database/Video/sample3.mp4")
