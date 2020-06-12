@@ -10,7 +10,7 @@ Cleaning up of keywords has to be done.
 	-> Keep only most similar keywords (step might be needed multiple times)
 
 *Add try-except for non supported languages in Watson and translate
-*Change Watson to return rake if error. Modify in keywords code. Make it return key+ent
+*Change Watson to return rake if error. 
 
 
 Visit the URL and extract full title for google image search?
