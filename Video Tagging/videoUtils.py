@@ -1,7 +1,7 @@
 import os
 import subprocess
 import shutil
-
+from collections import Counter
 
 def videoFrames(filename, framerate=1):
     """
@@ -26,3 +26,13 @@ def videoFrames(filename, framerate=1):
     )
     return [os.path.join(tmpdir, i) for i in os.listdir(tmpdir)]
 
+def getTopKCounter(a, K):
+    '''
+    Returns the top K frequent words from a list of words
+    '''
+    r = []
+    for i in a:
+        r.extend(i)
+    c = Counter(r)
+    words = [i[0] for i in c.most_common(K)]
+    return words
