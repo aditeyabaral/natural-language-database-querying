@@ -21,13 +21,28 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(
 )
 predictor = DefaultPredictor(cfg)
 
-frames = videoFrames("sample2.mp4")
-classes = []
-for image in frames:
-    im = cv2.imread(image)
-    outputs = predictor(im)
-    for class_id in outputs["instances"].pred_classes:
-        classes.append(MetadataCatalog.get(cfg.DATASETS.TRAIN[0]).thing_classes[class_id])
 
-print(getTopKCounter([classes], 5))
+def importantFrames(vid):
+    frames = videoFrames(vid)
+    classes = []
+    image_classes = []
+    for image in frames:
+        cur_image_classes = []
+        im = cv2.imread(image)
+        outputs = predictor(im)
+        for class_id in outputs["instances"].pred_classes:
+            cur_image_classes.append(
+                MetadataCatalog.get(cfg.DATASETS.TRAIN[0]).thing_classes[class_id]
+            )
+            classes.append(
+                MetadataCatalog.get(cfg.DATASETS.TRAIN[0]).thing_classes[class_id]
+            )
+        image_classes.append(cur_image_classes)
 
+    imp_classes = getTopKCounter([classes], 5)
+    imp_frames = []
+    for frame, image_tags in zip(frames, image_classes):
+        if set(image_tags).intersection(set(imp_classes)):
+            imp_frames.append(frame)
+
+    return imp_classes, imp_frames
