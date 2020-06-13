@@ -4,7 +4,8 @@ from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog
 from detectron2.engine import DefaultPredictor
 from detectron2.utils.logger import setup_logger
-from videoUtils import videoFrames
+from videoUtils import videoFrames, getTopKCounter
+from collections import Counter
 
 setup_logger()
 
@@ -20,15 +21,13 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(
 )
 predictor = DefaultPredictor(cfg)
 
-frames = videoFrames("sample15.mp4")
-classes = set()
+frames = videoFrames("sample2.mp4")
+classes = []
 for image in frames:
-    print(image)
     im = cv2.imread(image)
-    print(im)
     outputs = predictor(im)
     for class_id in outputs["instances"].pred_classes:
-        classes.add(MetadataCatalog.get(cfg.DATASETS.TRAIN[0]).thing_classes[class_id])
+        classes.append(MetadataCatalog.get(cfg.DATASETS.TRAIN[0]).thing_classes[class_id])
 
-print(classes)
+print(getTopKCounter([classes], 5))
 
