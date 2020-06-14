@@ -2,16 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import keywords
 import speechRecognition
+import videoUtils
+import objectDetection
 import os
-import subprocess
-import shutil
-from collections import Counter
-import gensim.downloader as api
-from sklearn.cluster import KMeans
 import time
-import random
-
-model = api.load("fasttext-wiki-news-subwords-300")
 
 def getLinks(filename):
     search_url = 'http://www.google.co.in/searchbyimage/upload'
@@ -80,7 +74,7 @@ def getYouTubeTags(yt_links):
 
 def getImageTags(frame_keywords):
     #remove least similar words from keywords - w2v, remove last few and ensure atleast 2 keywords retain
-    frame_keywords = clusterKeywords([frame_keywords])
+    frame_keywords = videoUtils.clusterKeywords([frame_keywords])
     temp_filter = []
     for i in frame_keywords:
         for j in i.split():
@@ -128,77 +122,22 @@ def getImageTags(frame_keywords):
     return image_tags
 
 
-def getTagsfromFrame(imgfilename, videofilename, audio_keywords):
+def getTagsfromFrame(imgfilename, videofilename, audio_keywords, frame_objects):
     link_obj = getLinks(imgfilename)
     if link_obj is not None:
         all_links = [str(i.get("href")) for i in link_obj]
         youtube_links = getYouTubeLinks(all_links)
-        if youtube_links: #add '0 and youtube_links' to test image search results
+        if youtube_links: 
             youtube_tags = getYouTubeTags(youtube_links)
-            #print(youtube_tags)
             return youtube_tags
     frame_keywords = list(set(audio_keywords["keywords"]+audio_keywords["entities"]))
-    #frame_objects = <get objects and text in frame>
-    #frame_keywords+= frame_objects
-    #print(frame_keywords)
+    frame_keywords+= frame_objects
+    frame_keywords = list(set(frame_keywords))
     image_tags = getImageTags(frame_keywords)
-    #print(image_tags)
     return image_tags
-        
-def videoFrames(filename, framerate = 1):
-    vid_file = os.path.join(os.path.dirname(os.getcwd()), "Database", "Video", filename)
-    assert os.path.isfile(vid_file), "Given path is not a valid file"
-    tmpdir = os.path.join(os.getcwd(), "tmp")
-    if os.path.isdir(tmpdir):
-        shutil.rmtree(tmpdir)
-    os.mkdir(tmpdir)
-    subprocess.run(
-        [
-            "ffmpeg",
-            "-i",
-            vid_file,
-            "-r",
-            f"{framerate}",
-            os.path.join(tmpdir, "img_%04d.jpg"),
-        ]
-    )
-    return [os.path.join(tmpdir, i) for i in os.listdir(tmpdir)]
-
-def getTopKCounter(a, K):
-    r = []
-    for i in a:
-        r.extend(i)
-    c = Counter(r)
-    words = [i[0] for i in c.most_common(K)]
-    return words
-   
-def clusterKeywords(keywords):
-    k = []
-    for i in keywords:
-        k.extend(i)
-    keywords = k
-    sim_matrix = []
-    for word1 in keywords:
-        word_sims = []
-        for word2 in keywords:
-            try:
-                word_sims.append(model.similarity(word1, word2))
-            except:
-                word_sims.append(random.random())
-        sim_matrix.append(word_sims)
-
-    clusterer = KMeans(n_clusters=2)
-    cm = clusterer.fit(sim_matrix)
-    biggest_cluster = max(cm.labels_, key = list(cm.labels_).count)
-    relevant_keywords = []
-    for word, label in zip(keywords, cm.labels_):
-        if label == biggest_cluster:
-            relevant_keywords.append(word)
-    return relevant_keywords
-     
 
 def getTags(videofilename):
-    path_to_images = videoFrames(videofilename)
+    frame_objects, path_to_images = objectDetection.importantFrames(videofilename)
     videofilename = os.path.join(os.path.dirname(os.getcwd()), "Database", "Video", videofilename)
     transcript, translated = speechRecognition.video_to_text(videofilename)
     keywords_translated = keywords.getKeywordsWatson(translated)
@@ -209,8 +148,9 @@ def getTags(videofilename):
     l = len(path_to_images)
     for count, p in enumerate(path_to_images):
         print("{}/{}".format(count+1,l))
-        tags.append(getTagsfromFrame(p,videofilename,keywords_translated))
-    return tags, getTopKCounter(tags, 10)
+        tags.append(getTagsfromFrame(p, videofilename, keywords_translated, frame_objects))
+    return tags, videoUtils.getTopKCounter(tags, 10)
+
     #filter this list by EITHER- 
         #A. combining the list of lists into one list, take list(set(list)), 
             #then use w2v to find most similar words(top K)
