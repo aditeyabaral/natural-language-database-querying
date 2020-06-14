@@ -6,7 +6,12 @@ import os
 import subprocess
 import shutil
 from collections import Counter
+import gensim.downloader as api
+from sklearn.cluster import KMeans
 import time
+import random
+
+model = api.load("fasttext-wiki-news-subwords-300")
 
 def getLinks(filename):
     search_url = 'http://www.google.co.in/searchbyimage/upload'
@@ -18,7 +23,9 @@ def getLinks(filename):
     page = requests.get(imgsearch_url, headers = headers)
     soup = BeautifulSoup(page.content, "html.parser")
     links = soup.find_all("a", href = True)
-    return links
+    if "Pages that include matching images" in str(page.content):
+        return links
+    return None
        
 
 def getYouTubeLinks(a):
@@ -58,7 +65,7 @@ def getYouTubeTags(yt_links):
     for i in temp_youtube_tags:
         t = []
         for j in i: 
-            if j in ["keywords", "entities", "categories"]: #taking kw, ent and category
+            if j in ["keywords", "entities"]: #taking kw, ent and category
                 all_youtube_tags.extend(i[j])
                 t.extend(i[j])
         grouped_youtube_tags.append(set(t))
@@ -73,6 +80,7 @@ def getYouTubeTags(yt_links):
 
 def getImageTags(frame_keywords):
     #remove least similar words from keywords - w2v, remove last few and ensure atleast 2 keywords retain
+    frame_keywords = clusterKeywords([frame_keywords])
     temp_filter = []
     for i in frame_keywords:
         for j in i.split():
@@ -122,17 +130,20 @@ def getImageTags(frame_keywords):
 
 def getTagsfromFrame(imgfilename, videofilename, audio_keywords):
     link_obj = getLinks(imgfilename)
-    all_links = [str(i.get("href")) for i in link_obj]
-    youtube_links = getYouTubeLinks(all_links)
-    if youtube_links: #add '0 and youtube_links' to test image search results
-        youtube_tags = getYouTubeTags(youtube_links)
-        return youtube_tags
-    else:
-        frame_keywords = list(set(audio_keywords["keywords"]+audio_keywords["entities"]))
-        #frame_objects = <get objects and text in frame>
-        #frame_keywords+= frame_objects
-        image_tags = getImageTags(frame_keywords)
-        return image_tags
+    if link_obj is not None:
+        all_links = [str(i.get("href")) for i in link_obj]
+        youtube_links = getYouTubeLinks(all_links)
+        if youtube_links: #add '0 and youtube_links' to test image search results
+            youtube_tags = getYouTubeTags(youtube_links)
+            #print(youtube_tags)
+            return youtube_tags
+    frame_keywords = list(set(audio_keywords["keywords"]+audio_keywords["entities"]))
+    #frame_objects = <get objects and text in frame>
+    #frame_keywords+= frame_objects
+    #print(frame_keywords)
+    image_tags = getImageTags(frame_keywords)
+    #print(image_tags)
+    return image_tags
         
 def videoFrames(filename, framerate = 1):
     vid_file = os.path.join(os.path.dirname(os.getcwd()), "Database", "Video", filename)
@@ -160,15 +171,44 @@ def getTopKCounter(a, K):
     c = Counter(r)
     words = [i[0] for i in c.most_common(K)]
     return words
-        
+   
+def clusterKeywords(keywords):
+    k = []
+    for i in keywords:
+        k.extend(i)
+    keywords = k
+    sim_matrix = []
+    for word1 in keywords:
+        word_sims = []
+        for word2 in keywords:
+            try:
+                word_sims.append(model.similarity(word1, word2))
+            except:
+                word_sims.append(random.random())
+        sim_matrix.append(word_sims)
+
+    clusterer = KMeans(n_clusters=2)
+    cm = clusterer.fit(sim_matrix)
+    biggest_cluster = max(cm.labels_, key = list(cm.labels_).count)
+    relevant_keywords = []
+    for word, label in zip(keywords, cm.labels_):
+        if label == biggest_cluster:
+            relevant_keywords.append(word)
+    return relevant_keywords
+     
+
 def getTags(videofilename):
     path_to_images = videoFrames(videofilename)
     videofilename = os.path.join(os.path.dirname(os.getcwd()), "Database", "Video", videofilename)
     transcript, translated = speechRecognition.video_to_text(videofilename)
     keywords_translated = keywords.getKeywordsWatson(translated)
+    if keywords_translated == -1:
+        k = keywords.getKeywordsRAKE(translated)
+        keywords_translated = {"keywords":k, "entities":[], "categories":[]}
     tags = []
-    for p in path_to_images:
-        print(p)
+    l = len(path_to_images)
+    for count, p in enumerate(path_to_images):
+        print("{}/{}".format(count+1,l))
         tags.append(getTagsfromFrame(p,videofilename,keywords_translated))
     return tags, getTopKCounter(tags, 10)
     #filter this list by EITHER- 
@@ -181,4 +221,4 @@ def getTags(videofilename):
 videofilename = r"sample2.mp4"
 start_time = time.time()
 res = getTags(videofilename)
-duration = time.time()-start_time
+duration = (time.time()-start_time)/60

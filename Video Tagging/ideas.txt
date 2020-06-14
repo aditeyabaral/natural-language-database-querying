@@ -11,6 +11,6 @@ Cleaning up of keywords has to be done.
 	-> Keep only most similar keywords (step might be needed multiple times)
 
 os.path.basename
-
+take youtube video only if "Youtube videos with picture" are on the page
  
 Visit the URL and extract full title for google image search?
