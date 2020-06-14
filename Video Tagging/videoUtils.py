@@ -6,6 +6,9 @@ import gensim.downloader as api
 from sklearn.cluster import KMeans
 
 
+model = api.load("fasttext-wiki-news-subwords-300")
+clusterer = KMeans(n_clusters=2)
+
 def videoFrames(filename, framerate=1):
     """
     Returns a generator of frames from a video specified by FILEPATH
@@ -43,21 +46,21 @@ def getTopKCounter(a, K):
 
 
 def clusterKeywords(keywords):
-    model = api.load("fasttext-wiki-news-subwords-300")
     sim_matrix = []
     for word1 in keywords:
         word_sims = []
         for word2 in keywords:
-            word_sims.append(model.similarity(word1, word2))
+            try:
+                word_sims.append(model.similarity(word1, word2))
+            except:
+                word_sims.append(0)
         sim_matrix.append(word_sims)
 
-    clusterer = KMeans(n_clusters=2)
     cm = clusterer.fit(sim_matrix)
     biggest_cluster = max(cm.labels_, key=cm.labels_.count)
     relevant_keywords = []
     for word, label in zip(keywords, cm.labels_):
         if label == biggest_cluster:
             relevant_keywords.append(word)
-
     return relevant_keywords
 
