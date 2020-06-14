@@ -162,3 +162,7 @@ videofilename = r"sample2.mp4"
 start_time = time.time()
 res = getTags(videofilename)
 duration = (time.time()-start_time)/60
+
+#print("All sets:\n",res[0])
+print("Top repeating:\n",res[1])
+print("Clustered top repeating:\n",videoUtils.clusterKeywords(res[1]))
