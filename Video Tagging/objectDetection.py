@@ -21,7 +21,6 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(
 )
 predictor = DefaultPredictor(cfg)
 
-
 def importantFrames(vid):
     frames = videoFrames(vid)
     classes = []
