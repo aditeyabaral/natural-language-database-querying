@@ -6,6 +6,8 @@ from detectron2.engine import DefaultPredictor
 from detectron2.utils.logger import setup_logger
 from videoUtils import videoFrames, getTopKCounter
 from collections import Counter
+from PIL import Image
+import imagehash
 
 setup_logger()
 
@@ -45,3 +47,14 @@ def importantFrames(vid):
             imp_frames.append(frame)
 
     return imp_classes, imp_frames
+
+def clusterFrames(frames):
+    hashes = [imagehash.average_hash(Image.open(path)) for path in frames]
+    marks = [True] * len(hashes)
+    for i in range(len(marks)):
+        if marks[i]:
+            for j in range(len(marks[i+1:])):
+                if hashes[i] - hashes[j] < 5:
+                    marks[j] = False
+
+    return [frames[i] for i in range(len(frames)) if marks[i]]
