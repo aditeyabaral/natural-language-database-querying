@@ -1,6 +1,11 @@
 video   -> audio -> transcript -> audio_keywords
 	-> frames -> objects, description
  
+description:
+https://machinelearningmastery.com/develop-a-deep-learning-caption-generation-model-in-python/
+https://www.analyticsvidhya.com/blog/2018/04/solving-an-image-captioning-task-using-deep-learning/
+https://towardsdatascience.com/image-captioning-with-keras-teaching-computers-to-describe-pictures-c88a46a311b8
+
 filtered frames - 
 	1. YouTube: 
 		if YT link present -> extract keywords from title, description
