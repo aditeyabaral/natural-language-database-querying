@@ -1,0 +1,16 @@
+video -> frames -> objects in frames
+		-> most occuring objects in video
+	-> frame rate?
+
+filtered frames -> frames containing most occuring object
+
+get common tags returned across all frames(or atleast 85%) -> use these tags
+
+Cleaning up of keywords has to be done. 
+	-> Remove same name duplicates
+	-> Keep only most similar keywords (step might be needed multiple times)
+
+os.path.basename
+take youtube video only if "Youtube videos with picture" are on the page
+ 
+Visit the URL and extract full title for google image search?
