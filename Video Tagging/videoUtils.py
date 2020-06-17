@@ -2,7 +2,6 @@ import os
 import shutil
 import subprocess
 from collections import Counter
-
 import gensim.downloader as api
 from sklearn.cluster import KMeans
 

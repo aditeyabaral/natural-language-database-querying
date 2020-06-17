@@ -9,10 +9,10 @@ https://towardsdatascience.com/image-captioning-with-keras-teaching-computers-to
 filtered frames - 
 	1. YouTube: 
 		if YT link present -> extract keywords from title, description
-	2. use description of video 
+	2. use description of frame -> keywords
 
 	// CHUCKED FOR NOW
-	3. description of video (for each frame) 
+	3. description of frame (for each frame) 
 		-> keywords -> Google image search -> relevant searches
 	4. Google image titles - VERY BAD SEARCHES
 
@@ -23,7 +23,7 @@ filtering needed (list(set(all_keywords)) -> clustering/topK) -> filtered_keywor
 3. keywords from frame description
 
 frame_keywords = [[f1k1,f1k2,...,f1kn], [f2k1...f2kn], [fnk1...fnkn]]
-topK -> topK(frame_keywords)
+topK -> topK(frame_tags)
 topK words:
 	1. Get keywords returned for every frame
 	2. Return top K repeating words
@@ -39,5 +39,5 @@ clustering:
 
 
 final tags: 
-	1. NER (must)
+	1. NER [DONE]
 	2. filtered_keywords

@@ -1,5 +1,4 @@
 import os
-
 import speech_recognition as sr
 from googletrans import Translator
 from moviepy.editor import VideoFileClip
