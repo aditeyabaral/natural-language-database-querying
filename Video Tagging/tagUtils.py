@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
+
 import keywords
+
 
 def getLinks(filename):
     search_url = "http://www.google.co.in/searchbyimage/upload"
@@ -88,7 +90,7 @@ def getYouTubeTags(yt_links):
 
 
 def getGoogleRelevantTerms(frame_keywords):
-    
+
     frame_keywords = " ".join(frame_keywords).strip().split()
     query = "+".join(frame_keywords)
     search_url = r"http://www.google.com/search?q={}&tbm=isch".format(query)
@@ -107,5 +109,4 @@ def getGoogleRelevantTerms(frame_keywords):
         for i in links
         if str(i.get("href")).startswith("/search") and i.text not in exclude
     ]
-    
     return google_relevant_searches

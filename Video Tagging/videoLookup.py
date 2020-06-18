@@ -32,16 +32,19 @@ def getTagsfromAudio(videofilename):
 
 
 def getFrameTags(videopath):
-    path_to_images = objectDetection.getFramesFromVideo(videopath)
+    path_to_images = objectDetection.getFramesFromVideo(videopath, cluster=True)
     frame_tags = []
     l = len(path_to_images)
     for count, p in enumerate(path_to_images):
         print("{}/{}".format(count + 1, l))
-        frame objects, frame description = objectDetection.getFrameDetails(p) <GET FRAME OBJECTS AND FRAME DESCRIPTION>
+        frame_objects, frame_description = objectDetection.getFrameDetails(p)
+        print(frame_description)
         frame_keywords = keywords.getKeywordsWatson(frame_description)
         if frame_keywords is None:
             frame_keywords = keywords.getKeywordsRAKE(frame_description)
-        online_tags = tagUtils.getOnlineTags(p, frame_keywords)
+        else:
+            frame_keywords = frame_keywords["keywords"]
+        online_tags = getOnlineTags(p, frame_keywords)
         frame_tags.extend(online_tags + frame_keywords + frame_objects)
     return frame_tags
 
@@ -55,5 +58,6 @@ def getTags(videofilename):
     return audio_keywords, audio_NER, frame_tags
 
 
-videofilename = r"sample2.mp4"
+videofilename = r"sample3.mp4"
 res = getTags(videofilename)
+print(res)

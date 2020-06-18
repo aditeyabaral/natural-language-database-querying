@@ -64,7 +64,6 @@ def getDescriptionFromFrame(frame):
         "http://localhost:5000/model/predict",
         files={"image": ("image.png", open(frame, "rb"), "image/png")},
     )
-    print(r.json())
     desc = r.json()["predictions"][0]["caption"]
     return desc
 
