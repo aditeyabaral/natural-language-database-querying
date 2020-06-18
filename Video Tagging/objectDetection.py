@@ -1,13 +1,17 @@
+from collections import Counter
+
 import cv2
+import imagehash
+import requests
 from detectron2 import model_zoo
 from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog
 from detectron2.engine import DefaultPredictor
 from detectron2.utils.logger import setup_logger
-from videoUtils import videoFrames, getTopKCounter
-from collections import Counter
 from PIL import Image
-import imagehash
+
+# from videoUtils import getTopKCounter, videoFrames
+from videoUtils import videoFrames
 
 setup_logger()
 
@@ -23,38 +27,48 @@ cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(
 )
 predictor = DefaultPredictor(cfg)
 
-def importantFrames(vid):
-    frames = videoFrames(vid)
-    classes = []
-    image_classes = []
-    for image in frames:
-        cur_image_classes = []
-        im = cv2.imread(image)
-        outputs = predictor(im)
-        for class_id in outputs["instances"].pred_classes:
-            cur_image_classes.append(
-                MetadataCatalog.get(cfg.DATASETS.TRAIN[0]).thing_classes[class_id]
-            )
-            classes.append(
-                MetadataCatalog.get(cfg.DATASETS.TRAIN[0]).thing_classes[class_id]
-            )
-        image_classes.append(cur_image_classes)
-
-    imp_classes = getTopKCounter([classes], 5)
-    imp_frames = []
-    for frame, image_tags in zip(frames, image_classes):
-        if set(image_tags).intersection(set(imp_classes)):
-            imp_frames.append(frame)
-
-    return imp_classes, imp_frames
 
 def clusterFrames(frames):
     hashes = [imagehash.average_hash(Image.open(path)) for path in frames]
     marks = [True] * len(hashes)
     for i in range(len(marks)):
         if marks[i]:
-            for j in range(len(marks[i+1:])):
+            for j in range(len(marks[i + 1 :])):
                 if hashes[i] - hashes[j] < 5:
                     marks[j] = False
-
     return [frames[i] for i in range(len(frames)) if marks[i]]
+
+
+def getFramesFromVideo(vid, cluster=False):
+    frames = videoFrames(vid)
+    if cluster:
+        frames = clusterFrames(frames)
+
+    return frames
+
+
+def getObjectsFromFrame(frame):
+    cur_image_classes = []
+    im = cv2.imread(frame)
+    outputs = predictor(im)
+    for class_id in outputs["instances"].pred_classes:
+        cur_image_classes.append(
+            MetadataCatalog.get(cfg.DATASETS.TRAIN[0]).thing_classes[class_id]
+        )
+
+    return cur_image_classes
+
+
+def getDescriptionFromFrame(frame):
+    r = requests.post(
+        "http://localhost:5000/model/predict",
+        files={"image": ("image.png", open(frame, "rb"), "image/png")},
+    )
+    print(r.json())
+    desc = r.json()["predictions"][0]["caption"]
+    return desc
+
+def getFrameDetails(frame):
+    classes = getObjectsFromFrame(frame)
+    desc = getDescriptionFromFrame(frame)
+    return classes, desc
