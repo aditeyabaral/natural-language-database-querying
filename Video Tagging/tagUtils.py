@@ -88,6 +88,11 @@ def getYouTubeTags(yt_links):
         return common_youtube_tags
     return all_youtube_tags  # common might not return all stuff
 
+def filterGoogleRelevantTerms(keywords):
+    check = lambda x: "wallpaper" not in x and "iphone" not in x and "shutterstock" not in x and "shutter" not in x and "href" not in x and "https" not in x
+    filtered = [k for k in keywords if check(k)]
+    return filtered
+
 
 def getGoogleRelevantTerms(frame_keywords):
 
@@ -109,4 +114,5 @@ def getGoogleRelevantTerms(frame_keywords):
         for i in links
         if str(i.get("href")).startswith("/search") and i.text not in exclude
     ]
-    return google_relevant_searches
+    filtered = filterGoogleRelevantTerms(google_relevant_searches)
+    return filtered
