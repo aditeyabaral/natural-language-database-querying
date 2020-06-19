@@ -4,6 +4,7 @@ import keywords
 import objectDetection
 import speechRecognition
 import tagUtils
+import videoUtils
 
 
 def getOnlineTags(imgfilename, frame_keywords):
@@ -45,7 +46,7 @@ def getFrameTags(videopath):
         else:
             frame_keywords = frame_keywords["keywords"]
         online_tags = getOnlineTags(p, frame_keywords)
-        frame_tags.extend(online_tags + frame_keywords + frame_objects)
+        frame_tags.extend(online_tags + frame_keywords)
     return frame_tags
 
 
@@ -58,6 +59,7 @@ def getTags(videofilename):
     return audio_keywords, audio_NER, frame_tags
 
 
-videofilename = r"sample3.mp4"
+videofilename = r"sample16.mp4"
 res = getTags(videofilename)
-print(res)
+filtered = videoUtils.getTopKCounter(res, 20)
+print(filtered)
