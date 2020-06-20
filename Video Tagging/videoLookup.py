@@ -63,7 +63,7 @@ def getTags(videofilename):
     return audio_keywords, audio_NER, frame_tags
 
 
-videofilename = r"vid3.mp4"
+videofilename = r"vid4.mp4"
 res = getTags(videofilename)
 filtered = videoUtils.getTopKCounter(res, 20)
 print(filtered)

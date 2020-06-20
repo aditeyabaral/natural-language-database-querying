@@ -18,9 +18,6 @@ def videoFrames(filename, framerate=1):
     print(vid_file)
     assert os.path.isfile(vid_file), "Given path is not a valid file"
     tmpdir = os.path.join(os.getcwd(), "tmp")
-    if os.path.isdir(tmpdir):
-        shutil.rmtree(tmpdir)
-    os.mkdir(tmpdir)
     subprocess.run(
         [
             "ffmpeg",
@@ -31,7 +28,7 @@ def videoFrames(filename, framerate=1):
             os.path.join(tmpdir, "img_%04d.jpg"),
         ]
     )
-    return [os.path.join(tmpdir, i) for i in os.listdir(tmpdir)]
+    return [os.path.join(tmpdir, i) for i in os.listdir(tmpdir) if not i.endswith(".wav")]
 
 
 def getTopKCounter(a, K):
