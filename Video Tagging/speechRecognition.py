@@ -22,9 +22,9 @@ def video_to_text(filename):
     video = VideoFileClip(filename)
     audio_obj = video.audio
     short_filename = filename[max(0,filename.rfind("/"))+1:filename.rfind(".")]
-    audio_obj.write_audiofile(r"Database/Audio/{}.wav".format(short_filename))
+    audio_obj.write_audiofile(r"Video Tagging/tmp/{}.wav".format(short_filename))
     r = sr.Recognizer()
-    audiofile = sr.AudioFile(r"Database/Audio/{}.wav".format(short_filename))
+    audiofile = sr.AudioFile(r"Video Tagging/tmp/{}.wav".format(short_filename))
     
     with audiofile as source:
         r.adjust_for_ambient_noise(source, duration = 2)
@@ -47,7 +47,7 @@ def video_to_text(filename):
         transcript = " ".join(transcript)
         translated = translate(transcript)
         return transcript, translated
-    except UnknownValueError:
+    except:
         return None
 
 def translate(query):
