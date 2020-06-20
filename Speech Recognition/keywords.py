@@ -40,7 +40,7 @@ def getKeywordsWatson(text):
         final = {"keywords":keys, "categories":categories, "entities":entities}
         return final
     except:
-        return -1
+        return None
 
 def getKeywordsRAKE(text):
     r.extract_keywords_from_text(text)

@@ -21,15 +21,19 @@ def getOnlineTags(imgfilename, frame_keywords):
 
 
 def getTagsfromAudio(videofilename):
-    _, translated = speechRecognition.video_to_text(videofilename)
-    watson_features = keywords.getKeywordsWatson(translated)
-    if watson_features is None:
-        audio_keywords = keywords.getKeywordsRAKE(translated)
-        audio_NER = keywords.getKeywordsNER(translated)
+    audio = speechRecognition.video_to_text(videofilename)
+    if audio is not None:
+        transcript, translated = audio
+        watson_features = keywords.getKeywordsWatson(translated)
+        if watson_features is None:
+            audio_keywords = keywords.getKeywordsRAKE(translated)
+            audio_NER = keywords.getKeywordsNER(translated)
+        else:
+            audio_keywords = watson_features["keywords"]
+            audio_NER = watson_features["entities"]
+        return audio_keywords, audio_NER
     else:
-        audio_keywords = watson_features["keywords"]
-        audio_NER = watson_features["entities"]
-    return audio_keywords, audio_NER
+        return [], []
 
 
 def getFrameTags(videopath):
