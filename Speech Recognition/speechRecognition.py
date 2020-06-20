@@ -28,24 +28,27 @@ def video_to_text(filename):
     
     with audiofile as source:
         r.adjust_for_ambient_noise(source, duration = 2)
-        
-    with audiofile as source:
-        dur = source.DURATION
-        if dur>=180:
-            audio = []
-            mins = (dur/60)
-            offset = 0
-            while mins>=0:
-                audio.append(r.record(source, duration = 60, offset = offset))
-                offset = -1
-                mins-=1
-        else:
-            audio = [r.record(source, duration = source.DURATION)]
-            
-    transcript = [r.recognize_google(i, show_all = False) for i in audio]
-    transcript = " ".join(transcript)
-    translated = translate(transcript)
-    return transcript, translated
+
+    try:    
+        with audiofile as source:
+            dur = source.DURATION
+            if dur>=180:
+                audio = []
+                mins = (dur/60)
+                offset = 0
+                while mins>=0:
+                    audio.append(r.record(source, duration = 60, offset = offset))
+                    offset = -1
+                    mins-=1
+            else:
+                audio = [r.record(source, duration = source.DURATION)]
+                
+        transcript = [r.recognize_google(i, show_all = False) for i in audio]
+        transcript = " ".join(transcript)
+        translated = translate(transcript)
+        return transcript, translated
+    except UnknownValueError:
+        return None
 
 def translate(query):
     translator = Translator()
