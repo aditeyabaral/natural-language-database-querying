@@ -35,10 +35,10 @@ def getTopKCounter(a, K):
     """
     Returns the top K frequent words from a list of words
     """
-    r = []
-    for i in a:
-        r.extend(i)
-    c = Counter(r)
+    # r = []
+    # for i in a:
+    #     r.extend(i)
+    c = Counter(a)
     words = [i[0] for i in c.most_common(K)]
     return words
 

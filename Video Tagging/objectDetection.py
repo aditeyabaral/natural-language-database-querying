@@ -70,4 +70,5 @@ def getDescriptionFromFrame(frame):
 def getFrameDetails(frame):
     classes = getObjectsFromFrame(frame)
     desc = getDescriptionFromFrame(frame)
+    # desc = None
     return classes, desc

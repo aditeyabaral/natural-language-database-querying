@@ -37,21 +37,22 @@ def getTagsfromAudio(videofilename):
 
 
 def getFrameTags(videopath):
-    path_to_images = objectDetection.getFramesFromVideo(videopath)
+    path_to_images = objectDetection.getFramesFromVideo(videopath, cluster=True)
     frame_tags = []
     l = len(path_to_images)
     for count, p in enumerate(path_to_images):
         print("{}/{}".format(count + 1, l))
         frame_objects, frame_description = objectDetection.getFrameDetails(p)
-        print(frame_description)
+        # print(frame_description)
         # frame_keywords = keywords.getKeywordsWatson(frame_description)
         # if frame_keywords is None:
         #    frame_keywords = keywords.getKeywordsRAKE(frame_description)
         # else:
         #    frame_keywords = frame_keywords["keywords"]
         frame_keywords = keywords.getKeywordsRAKE(frame_description)
-        online_tags = getOnlineTags(p, frame_keywords)
-        frame_tags.extend(online_tags + frame_keywords)
+        # online_tags = getOnlineTags(p, frame_keywords)
+        # frame_tags.extend(online_tags + frame_keywords)
+        frame_tags.extend(frame_objects + frame_keywords)
     return frame_tags
 
 
@@ -66,8 +67,9 @@ def getTags(videofilename):
 
 def getFilteredTags(videofilename):
     audio_keywords, audio_NER, frame_tags = getTags(videofilename)
-    frame_tags = videoUtils.getTopKCounter(frame_tags, 15)
-    return list(set(audio_keywords + audio_NER + frame_tags))
+    frame_tags = videoUtils.getTopKCounter(frame_tags, 10)
+    all_tags = list(set(audio_keywords + audio_NER + frame_tags))
+    return [tag for tag in all_tags if len(tag.split()) <= 3]
 
 
 # videofilename = r"vid4.mp4"
