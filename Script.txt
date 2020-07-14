@@ -1,0 +1,40 @@
+TOPICS
+
+* Input as natural language query
+* Audio features - extraction of speech and translation -> extraction of keywords and entities
+
+* Tagging of Dataset -
+	* Objects in video
+	* Frame by frame(along with filtering) description of video -> Google reverse image search -> YT links
+	* Extraction of frame description -> Google search -> extract relevant searches
+					  -> extract keywords from description
+	* Experimental : Neural Network
+* Filtering of tags obtained
+* Similarity score to find video
+					
+SCRIPT
+
+<Aditeya>
+Good <time>, I am <> and today our team will  be showing you our solution for natural language database querying.
+The novelty of our approach lies in the application's use of concepts such as NLP and Audio Featuring along with Image Processing to provide matching relevant videos
+to any natural language query. We beleive that this approach can outperform a solution based entirely on image based features.
+Our application has 3 major parts - recognition of NLQ, extraction of features and tags from dataset of videos and matching of videos.
+</Aditeya>
+
+<Vishesh>
+The application starts by taking an input as an audio query through the GUI. The query is first recorded and then translated from the native language into English. The transcript is
+then processed using our audio processing pipeline to extract information such as the required keywords as well as the entities mentioned. 
+These features are used to perform the lookup.
+</Vishesh>
+
+The database is already pre-tagged. Each video in the dataset is first split into frames, which are then filtered based on image features to retain only 1 frame per scene.
+We perform a Google reverse image search to look for exact matching videos on YouTube to extract tags about the video. We then extract the objects and entities 
+in each of the filtered frames and use a language model to generate a description of the frame. The description is then searched on Google, and the
+relevant suggested searches are retrieved. We also extract the keywords from the description. We finally extract the audio from the video, translate it and extract
+keywords using our audio processing pipeline. All the tags obtained from the frames and online lookups are then filtered to retain only those which have a high frequency
+of occurence. The filtered tags are then combined with the keywords and entities from the audio to form the final set of tags for a video.
+
+We create a vector space out of the keywords in the query, and for all the videos in the dataset. The two feature spaces are then evaluated based on similarity, so that
+we can perform matches at a semantic level too. The video's feature space which provides the best match (highest similarity) is retrieved and displayed to the user.
+
+We will now show your the execution!
