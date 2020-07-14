@@ -27,14 +27,20 @@ then processed using our audio processing pipeline to extract information such a
 These features are used to perform the lookup.
 </Vishesh>
 
+<Vinay>
 The database is already pre-tagged. Each video in the dataset is first split into frames, which are then filtered based on image features to retain only 1 frame per scene.
 We perform a Google reverse image search to look for exact matching videos on YouTube to extract tags about the video. We then extract the objects and entities 
 in each of the filtered frames and use a language model to generate a description of the frame. The description is then searched on Google, and the
-relevant suggested searches are retrieved. We also extract the keywords from the description. We finally extract the audio from the video, translate it and extract
+relevant suggested searches are retrieved. 
+</Vinay>
+
+<Anirudh>
+We also extract the keywords from the description. We finally extract the audio from the video, translate it and extract
 keywords using our audio processing pipeline. All the tags obtained from the frames and online lookups are then filtered to retain only those which have a high frequency
 of occurence. The filtered tags are then combined with the keywords and entities from the audio to form the final set of tags for a video.
+</Anirudh>
+
 
 We create a vector space out of the keywords in the query, and for all the videos in the dataset. The two feature spaces are then evaluated based on similarity, so that
 we can perform matches at a semantic level too. The video's feature space which provides the best match (highest similarity) is retrieved and displayed to the user.
-
 We will now show your the execution!
