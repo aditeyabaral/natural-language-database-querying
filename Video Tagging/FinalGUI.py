@@ -67,7 +67,7 @@ class App:
     def searchQueryAudio(self):
         _, text = speechRecognition.audio_to_text()
         path = queryRetrieval.getRelevantVideo(text)
-        self.vidPath.set(path)
+        self.vidPath.set(os.path.join(os.path.dirname(os.getcwd()), "Database", "Video", path))
         # path = r"/home/anirudh/Projects/IntelTecho/Database/Video/Dogs.mp4"
         # self.vidPath.set(path)
 

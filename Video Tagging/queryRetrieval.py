@@ -25,7 +25,7 @@ lemm = WordNetLemmatizer()
 def getRelevantVideo(translated):
     tags = list(map(lemm.lemmatize, keywords.getKeywordsRAKE(translated)))
     vid_name, vid_tags = [], []
-    with open("videoTags.csv", "r") as tagsfile:
+    with open("tag_databases/tags_framek_frameo_filter.csv", "r") as tagsfile:
         reader = csv.reader(tagsfile)
         for row in reader:
             vid_tags.append(list(map(lemm.lemmatize, row[1:])))
