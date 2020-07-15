@@ -16,6 +16,8 @@ class App:
         # self.root.iconbitmap('icon.ico')
         self.vidName = StringVar()
         self.vidName.set("")
+        self.vidPath = StringVar()
+        self.vidPath.set("")
         self.blank = Label(self.root, bg="#121212")
         self.blank.pack()
         self.welcome = Label(
@@ -27,14 +29,14 @@ class App:
         self.blank.pack()
         self.blank = Label(self.root, bg="#121212")
         self.blank.pack()
-        self.content = Message(
+        self.content1 = Message(
             self.root,
-            textvariable=self.vidPath,
+            textvariable=self.vidName,
             bg="#121212",
             font=("Calibri"),
             fg="white",
         )
-        self.content.pack()
+        self.content1.pack()
         self.blank = Label(self.root, bg="#121212")
         self.blank.pack()
         self.search = Button(
@@ -47,8 +49,16 @@ class App:
         )
         self.search.config(height=2, width=30, borderwidth=0)
         self.search.pack(side=TOP, expand=1)
-        self.vidPath = StringVar()
-        self.vidPath.set("")
+        self.blank = Label(self.root, bg="#121212")
+        self.blank.pack()
+        self.content2 = Message(
+            self.root,
+            textvariable=self.vidPath,
+            bg="#121212",
+            font=("Calibri"),
+            fg="white",
+        )
+        self.content2.pack()
         self.blank = Label(self.root, bg="#121212")
         self.blank.pack()
         self.launch = Button(
