@@ -34,6 +34,8 @@ def video_to_text(filename):
     if os.path.isdir(tmpdir):
         shutil.rmtree(tmpdir)
     os.mkdir(tmpdir)
+    if audio_obj is None:
+        return None
     audio_obj.write_audiofile(os.path.join(tmpdir, "{}.wav".format(short_filename)))
     r = sr.Recognizer()
     audiofile = sr.AudioFile(os.path.join(tmpdir, "{}.wav".format(short_filename)))
