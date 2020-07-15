@@ -23,9 +23,10 @@ lemm = WordNetLemmatizer()
 
 
 def getRelevantVideo(translated):
+    print(translated)
     tags = list(map(lemm.lemmatize, keywords.getKeywordsRAKE(translated)))
     vid_name, vid_tags = [], []
-    with open("tag_databases/tags_framek_frameo_online_filter.csv", "r") as tagsfile:  # tags_framek_frameo_online_filter or tags_framek_frameo_filter 
+    with open("tag_databases/tags_framek_frameo_filter.csv", "r") as tagsfile:  # tags_framek_frameo_online_filter or tags_framek_frameo_filter 
         reader = csv.reader(tagsfile)
         for row in reader:
             vid_tags.append(list(map(lemm.lemmatize, row[1:])))
@@ -52,4 +53,4 @@ def getRelevantVideo(translated):
     position = sim_scores.index(max(sim_scores))
     # print("Score: ", sim_scores[position])
     most_similar_video = vid_name[position]
-    return most_similar_video
+    return most_similar_video, translated

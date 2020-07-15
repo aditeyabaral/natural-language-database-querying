@@ -14,8 +14,8 @@ class App:
         self.root.configure(background="#121212")
         self.root.geometry("800x500")
         # self.root.iconbitmap('icon.ico')
-        self.vidPath = StringVar()
-        self.vidPath.set("")
+        self.vidName = StringVar()
+        self.vidName.set("")
         self.blank = Label(self.root, bg="#121212")
         self.blank.pack()
         self.welcome = Label(
@@ -47,6 +47,8 @@ class App:
         )
         self.search.config(height=2, width=30, borderwidth=0)
         self.search.pack(side=TOP, expand=1)
+        self.vidPath = StringVar()
+        self.vidPath.set("")
         self.blank = Label(self.root, bg="#121212")
         self.blank.pack()
         self.launch = Button(
@@ -65,8 +67,11 @@ class App:
         self.root.mainloop()
 
     def searchQueryAudio(self):
+        self.vidPath.set("")
+        self.vidName.set("")
         _, text = speechRecognition.audio_to_text()
-        path = queryRetrieval.getRelevantVideo(text)
+        path, query = queryRetrieval.getRelevantVideo(text)
+        self.vidName.set(query)
         self.vidPath.set(os.path.join(os.path.dirname(os.getcwd()), "Database", "Video", path))
         # path = r"/home/anirudh/Projects/IntelTecho/Database/Video/Dogs.mp4"
         # self.vidPath.set(path)
