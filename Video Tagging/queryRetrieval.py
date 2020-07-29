@@ -26,7 +26,7 @@ def getRelevantVideo(translated):
     # print(translated)
     tags = list(map(lemm.lemmatize, keywords.getKeywordsRAKE(translated)))
     vid_name, vid_tags = [], []
-    with open("tag_databases/tags_test.csv", "r") as tagsfile:  # tags_framek_frameo_online_filter or tags_framek_frameo_filter 
+    with open("tag_databases/tags_test_2.csv", "r") as tagsfile:  # tags_framek_frameo_online_filter or tags_framek_frameo_filter 
         reader = csv.reader(tagsfile)
         for row in reader:
             vid_tags.append(list(map(lemm.lemmatize, row[1:])))
