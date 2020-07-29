@@ -4,8 +4,8 @@ import os
 import videoLookup
 
 root_path = os.path.join(os.path.dirname(os.getcwd()), "Database", "Video")
-video_list = os.listdir(root_path)
-with open("tags_frameo_nofilter.csv", "w") as tags_file:
+video_list = [i for i in os.listdir(root_path) if i.endswith("mp4")]
+with open("tag_databases/tags_test.csv", "w") as tags_file:
     writer = csv.writer(tags_file)
     for idx, path in enumerate(video_list):
         tags = videoLookup.getFilteredTags(path)

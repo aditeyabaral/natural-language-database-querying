@@ -43,10 +43,10 @@ def getFrameTags(videopath):
     for count, p in enumerate(path_to_images):
         print("{}/{}".format(count + 1, l))
         frame_objects, frame_description = objectDetection.getFrameDetails(p)
-#        frame_keywords = keywords.getKeywordsRAKE(frame_description)
-#        online_tags = getOnlineTags(p, frame_keywords)
-#        frame_tags.extend(online_tags)
-#        frame_tags.extend(frame_keywords)
+        frame_keywords = keywords.getKeywordsRAKE(frame_description)
+        online_tags = getOnlineTags(p, frame_keywords)
+        frame_tags.extend(online_tags)
+        frame_tags.extend(frame_keywords)
         frame_tags.extend(frame_objects)
     return frame_tags
 
@@ -62,6 +62,6 @@ def getTags(videofilename):
 
 def getFilteredTags(videofilename):
     audio_keywords, audio_NER, frame_tags = getTags(videofilename)
-#    frame_tags = videoUtils.getTopKCounter(frame_tags, 10)
+    frame_tags = videoUtils.getTopKCounter(frame_tags, 10)
     all_tags = list(set(audio_keywords + audio_NER + frame_tags))
     return [tag for tag in all_tags if len(tag.split()) <= 2]
