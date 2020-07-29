@@ -37,7 +37,7 @@ def getTagsfromAudio(videofilename):
 
 
 def getFrameTags(videopath):
-    path_to_images = objectDetection.getFramesFromVideo(videopath, cluster=True)
+    path_to_images = objectDetection.getFramesFromVideo(videopath)
     frame_tags = []
     l = len(path_to_images)
     for count, p in enumerate(path_to_images):
