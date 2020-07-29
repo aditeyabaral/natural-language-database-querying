@@ -44,8 +44,8 @@ def getFrameTags(videopath):
         print("{}/{}".format(count + 1, l))
         frame_objects, frame_description = objectDetection.getFrameDetails(p)
         frame_keywords = keywords.getKeywordsRAKE(frame_description)
-        online_tags = getOnlineTags(p, frame_keywords)
-        frame_tags.extend(online_tags)
+        #online_tags = getOnlineTags(p, frame_keywords)
+        #frame_tags.extend(online_tags)
         frame_tags.extend(frame_keywords)
         frame_tags.extend(frame_objects)
     return frame_tags
