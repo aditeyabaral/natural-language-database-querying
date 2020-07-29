@@ -3,3 +3,4 @@ yolo.h5
 __pycache__/
 .envrc
 tmp/
+nn/
